@@ -1,0 +1,60 @@
+CREATE DATABASE petshop_db;
+USE petshop_db;
+
+CREATE TABLE clientes (
+    id_cliente INT AUTO_INCREMENT PRIMARY KEY,
+    nome_cliente VARCHAR(100) NOT NULL,
+    cpf_cliente VARCHAR(14) UNIQUE NOT NULL,
+    telefone_cliente VARCHAR(15),
+    email_cliente VARCHAR(100)
+);
+
+CREATE TABLE pets (
+    id_pet INT AUTO_INCREMENT PRIMARY KEY,
+    nome_pet VARCHAR(100) NOT NULL,
+    especie_pet ENUM('cachorro','gato','ave','roedor','reptil','outros') NOT NULL,
+    porte_pet ENUM('pequeno','medio','grande') NOT NULL,
+    nascimento_pet DATE,
+    id_cliente INT,
+    FOREIGN KEY (id_cliente) REFERENCES clientes(id_cliente)
+);
+
+CREATE TABLE servicos (
+    id_servico INT AUTO_INCREMENT PRIMARY KEY,
+    nome_servico VARCHAR(100) NOT NULL,
+    duracao_min_servico INT NOT NULL,
+    preco_servico DECIMAL(10, 2) NOT NULL
+);
+
+CREATE TABLE agendamentos (
+    id_agendamento INT AUTO_INCREMENT PRIMARY KEY,
+    data_hora_agendamento DATETIME NOT NULL,
+    status_agendamento ENUM('agendado','concluido','cancelado') NOT NULL DEFAULT 'agendado',
+    observacoes_agendamento TEXT,
+    id_pet INT,
+    id_servico INT,
+    FOREIGN KEY (id_pet) REFERENCES pets(id_pet),
+    FOREIGN KEY (id_servico) REFERENCES servicos(id_servico)
+);
+
+INSERT INTO clientes (nome_cliente, cpf_cliente, telefone_cliente, email_cliente) VALUES
+('João Silva', '11122233344', '(21)98888-1234', 'joao.silva@example.com'),
+('Fernanda Costa', '55566677788', '(31)97777-5678', 'fernanda.costa@example.com'),
+('Lucas Pereira', '99988877766', '(41)96666-4321', 'lucas.pereira@example.com');
+
+INSERT INTO pets (nome_pet, especie_pet, porte_pet, nascimento_pet, id_cliente) VALUES
+('Rex', 'cachorro', 'grande', '2015-05-10', 1),
+('Mimi', 'gato', 'pequeno', '2023-03-22', 2),
+('Bidu', 'cachorro', 'medio', '2019-07-15', 3);
+
+INSERT INTO servicos (nome_servico, duracao_min_servico, preco_servico) VALUES
+('Banho', 45, 70.00),
+('Tosa', 60, 85.00),
+('Vacina', 15, 160.00),
+('Consulta', 30, 120.00);
+
+INSERT INTO agendamentos (data_hora_agendamento, status_agendamento, observacoes_agendamento, id_pet, id_servico) VALUES
+('2025-09-20 11:00:00', 'agendado', 'Banho', 1, 1),
+('2025-09-21 15:00:00', 'agendado', 'Consulta', 2, 4),
+('2025-09-22 10:30:00', 'agendado', 'Tosa', 3, 2);
+
